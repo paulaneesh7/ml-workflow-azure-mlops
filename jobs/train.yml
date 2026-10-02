@@ -32,6 +32,5 @@ environment:
   image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu22.04:latest
   conda_file: ../environments/conda.yaml
 
-# No compute instance name was available locally. Replace the value below
-# with the Azure ML compute instance in this workspace before submitting.
-compute: azureml:REPLACE_WITH_COMPUTE_INSTANCE
+# ML Computing Instance
+compute: azureml:paulaneesh51
