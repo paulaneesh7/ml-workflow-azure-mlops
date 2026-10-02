@@ -1,0 +1,32 @@
+# Non-secret training settings. Azure workspace, compute, and credentials
+# belong in jobs/train.yml or the Azure ML workspace, not in this file.
+
+seed: 42
+target_column: cycle_time_days
+experiment_name: change-request-cycle-time
+model_output_dir: outputs/model
+
+split:
+  # "time" and "group" are reserved for a later split implementation.
+  strategy: random
+  train_ratio: 0.70
+  validation_ratio: 0.15
+  test_ratio: 0.15
+
+# Identifiers and fields that are only known after approval, implementation,
+# or closure. These must not be model features.
+leakage_columns:
+  - cr_id
+  - requester_email
+  - final_approval_at
+  - actual_start_at
+  - actual_end_at
+  - resolved_at
+  - closed_at
+  - closure_code
+  - resolution_summary
+  - post_implementation_review
+  - actual_effort_hours
+  - rollback_performed
+  - sla_breached
+  - record_last_updated_at

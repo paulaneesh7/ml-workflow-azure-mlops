@@ -1,0 +1,37 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+type: command
+
+experiment_name: change-request-cycle-time
+display_name: train-cycle-time-xgboost
+description: >-
+  Train an XGBoost regressor to predict change-request cycle time.
+  Closure and other post-resolution fields are excluded from the features.
+
+# Paths below are relative to this file. The command itself runs with the
+# uploaded project root as its working directory.
+code: ..
+
+command: >-
+  python src/pipeline/training_pipeline.py
+  --data-path ${{inputs.training_data}}
+  --output-dir ${{outputs.model_artifacts}}
+  --config configs/config.yaml
+
+inputs:
+  training_data:
+    type: uri_file
+    path: azureml:change-request-data:1
+    mode: ro_mount
+
+outputs:
+  model_artifacts:
+    type: uri_folder
+    mode: rw_mount
+
+environment:
+  image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu22.04:latest
+  conda_file: ../environments/conda.yaml
+
+# No compute instance name was available locally. Replace the value below
+# with the Azure ML compute instance in this workspace before submitting.
+compute: azureml:REPLACE_WITH_COMPUTE_INSTANCE
