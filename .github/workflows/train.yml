@@ -1,0 +1,43 @@
+# Submits the Azure ML training job when code is pushed to main.
+# Store these as GitHub Actions secrets. Do not commit real values.
+# AZURE_CLIENT_ID
+# AZURE_TENANT_ID
+# AZURE_SUBSCRIPTION_ID
+# AZURE_RESOURCE_GROUP
+# AZURE_ML_WORKSPACE
+
+name: Train
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  submit-azure-ml-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install Azure ML CLI v2
+        run: az extension add --name ml --yes
+
+      - name: Submit training job
+        run: |
+          az ml job create \
+            --file jobs/train.yml \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
